@@ -1,5 +1,5 @@
 // redux/expenseSlice.js
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   expenseList: [],
@@ -14,12 +14,12 @@ const expenseSlice = createSlice({
     },
     removeExpense: (state, action) => {
       state.expenseList = state.expenseList.filter(
-        (expense) => expense.id !== action.payload.id
+        expense => expense.id !== action.payload.id,
       );
     },
     updateExpense: (state, action) => {
       const index = state.expenseList.findIndex(
-        (expense) => expense.id === action.payload.id
+        expense => expense.id === action.payload.id,
       );
       if (index !== -1) {
         state.expenseList[index] = action.payload;
@@ -28,6 +28,6 @@ const expenseSlice = createSlice({
   },
 });
 
-export const { addExpense, removeExpense, updateExpense } = expenseSlice.actions;
+export const {addExpense, removeExpense, updateExpense} = expenseSlice.actions;
 
 export default expenseSlice.reducer;

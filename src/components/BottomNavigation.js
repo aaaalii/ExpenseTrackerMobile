@@ -1,14 +1,14 @@
 import {Image, Pressable, Text, View} from 'react-native';
 import home from '../assets/icons/Vector.png';
 import bar from '../assets/icons/bars.png';
-import wallet from '../assets/icons/wallet.png';
-import user from '../assets/icons/person.png';
 import add from '../assets/icons/new.png';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 
 export default function BottomNavigation({isHome = true}) {
   const navigate = useNavigation();
+  const route = useRoute();
+  const routeName = route.name;
   return (
     <>
       <View
@@ -29,7 +29,7 @@ export default function BottomNavigation({isHome = true}) {
           }}>
           <Pressable onPress={() => navigate.navigate('Home')}>
             <Image
-              source={home}
+              source={routeName === 'Home' ? home : require('../assets/icons/home.png')}
               width={30}
               maxWidth={30}
               maxHeight={30}
@@ -73,7 +73,7 @@ export default function BottomNavigation({isHome = true}) {
           }}>
           <Pressable onPress={() => navigate.navigate('Statistics')}>
             <Image
-              source={bar}
+              source={routeName === 'Statistics' ? require('../assets/icons/bar-active.png') : bar}
               width={30}
               maxWidth={30}
               maxHeight={30}

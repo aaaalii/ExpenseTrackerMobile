@@ -25,14 +25,12 @@ const CalendarModal = ({show, onClose, onSelectDate}) => {
     <Modal
       visible={isCalendarVisible}
       transparent
-      // animationType="slide"
       onRequestClose={hideCalendar}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <Calendar
             style={{
               width: '80%',
-              // paddingLeft: 40,
             }}
             onDayPress={handleDayPress}
             markedDates={{

@@ -1,5 +1,6 @@
 import {
   Image,
+  Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,8 +13,10 @@ import headerBg from '../../assets/images/header-bg.png';
 import BottomNavigation from '../../components/BottomNavigation';
 import DefaultLayout from '../../Layout/Default';
 import {useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
 
 export default function Home() {
+  const navigation = useNavigation();
   const expenseList = Array.from(
     useSelector(state => state.expense.expenseList),
   );
@@ -38,19 +41,32 @@ export default function Home() {
               <Text style={{fontSize: 20, fontWeight: 700}}>
                 Transactions History
               </Text>
-              {/* <Text>See all</Text> */}
+              {expenseList.length !== 0 && (
+                <Pressable onPress={() => navigation.navigate('List')}>
+                  <Text>See all</Text>
+                </Pressable>
+              )}
             </View>
             <View style={{marginTop: 20}}>
-              {expenseList.reverse().map((value, index) => (
-                <View key={index}>
-                  <TransactionCard
-                    amount={value.amount}
-                    title={value.title}
-                    date={value.date}
-                    pic={headerBg}
-                  />
+              {expenseList.length !== 0 ? (
+                expenseList
+                  .reverse()
+                  .slice(0, 3)
+                  .map((value, index) => (
+                    <View key={index}>
+                      <TransactionCard
+                        amount={value.amount}
+                        title={value.title}
+                        date={value.date}
+                        pic={headerBg}
+                      />
+                    </View>
+                  ))
+              ) : (
+                <View>
+                  <Text>No expense added</Text>
                 </View>
-              ))}
+              )}
             </View>
           </View>
           {/* <View style={{marginVertical: 30}}>

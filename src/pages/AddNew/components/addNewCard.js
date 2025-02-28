@@ -7,6 +7,7 @@ import {
   TextInput,
   Pressable,
   Button,
+  Alert,
 } from 'react-native';
 import {Dropdown, SelectCountry} from 'react-native-element-dropdown';
 import CalendarModal from './CalendarModal';
@@ -40,10 +41,15 @@ export default function Card() {
   useEffect(() => {}, [showCalendar]);
 
   const addNewExpense = async () => {
-    // let expenseList = await AsyncStorage.getItem('expenseList');
+    if(selectedTitle === null || amount === null || date === ''){
+      Alert.alert('All fields are required');
+      return;
+    }
+    const d = Date.now().toString();
+    console.log(d);
     dispatch(
       addExpense({
-        id: Date.now.toString(),
+        id: d,
         title: selectedTitle,
         amount: parseFloat(amount),
         date: date,
@@ -52,7 +58,8 @@ export default function Card() {
     setTitle(null);
     setAmount(null);
     setDate(null);
-    console.log('Expense added successfully!');
+    Alert.alert('Expense added!');
+    return;
   };
 
   const renderItem = item => {
