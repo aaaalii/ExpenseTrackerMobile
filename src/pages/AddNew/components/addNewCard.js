@@ -1,22 +1,59 @@
-import React, {useState, useCallback} from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
-import img from '../../../assets/images/header-bg.png';
-import {Dropdown} from 'react-native-element-dropdown';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  Button,
+} from 'react-native';
+import {Dropdown, SelectCountry} from 'react-native-element-dropdown';
+import CalendarModal from './CalendarModal';
+import {pick} from '@react-native-documents/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch} from 'react-redux';
+import {addExpense} from '../../../store/expenseSlice';
 
 export default function Card() {
-  const [value, setValue] = useState(null);
-  const data = [
+  const [selectedTitle, setTitle] = useState(null);
+  const [amount, setAmount] = useState(null);
+  const [date, setDate] = useState('');
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [invoice, setInvoice] = useState(null);
+
+  const dispatch = useDispatch();
+
+  const dropdownData = [
     {
       label: 'Netflix',
-      value: '1',
-      image: img,
+      value: 0,
+      image: require('../../../assets/images/header-bg.png'),
     },
     {
-      label: 'Spotify',
-      value: '2',
-      image: img,
+      label: 'Amazon Prime',
+      value: 1,
+      image: require('../../../assets/images/header-bg.png'),
     },
   ];
+
+  useEffect(() => {}, [showCalendar]);
+
+  const addNewExpense = async () => {
+    // let expenseList = await AsyncStorage.getItem('expenseList');
+    dispatch(
+      addExpense({
+        id: Date.now.toString(),
+        title: selectedTitle,
+        amount: parseFloat(amount),
+        date: date,
+      }),
+    );
+    setTitle(null);
+    setAmount(null);
+    setDate(null);
+    console.log('Expense added successfully!');
+  };
 
   const renderItem = item => {
     return (
@@ -27,34 +64,79 @@ export default function Card() {
     );
   };
 
-  // Memoize the renderLeftIcon function
-  const renderLeftIcon = useCallback(() => {
-    if (value) {
-      const selectedItem = data.find(item => item.value === value);
-      return <Image source={selectedItem.image} style={styles.icon} />;
-    }
-    return null;
-  }, [data, value]);
-
   return (
     <View style={styles.container}>
-      <View>
-        <Text>Name</Text>
-        <View style={styles.dropdownContainer}>
-          <Dropdown
+      <View style={styles.card}>
+        <View>
+          <Text>NAME</Text>
+          <SelectCountry
             style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
-            placeholder="Select"
+            placeholderStyle={styles.placeholderStyle}
+            imageStyle={styles.imageStyle}
+            data={dropdownData}
             labelField="label"
             valueField="value"
-            value={value}
-            onChange={item => setValue(item.value)}
+            imageField="image"
+            placeholder="Select an option"
+            value={selectedTitle}
+            onChange={item => {
+              setTitle(item.value);
+            }}
             renderItem={renderItem}
-            renderLeftIcon={renderLeftIcon}
-            data={data}
+            // renderSelectedItem={renderItem}
           />
         </View>
+        <View style={styles.inputContainer}>
+          <Text>AMOUNT</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            onChangeText={setAmount}
+            value={amount}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text>DATE</Text>
+          <Pressable
+            onPress={() => setShowCalendar(true)}
+            style={styles.datePressable}>
+            <Text>{date || 'Select Date'}</Text>
+          </Pressable>
+          <CalendarModal
+            show={showCalendar}
+            onClose={() => setShowCalendar(false)}
+            onSelectDate={setDate}
+          />
+        </View>
+        {/* <View style={styles.inputContainer}>
+          <Text>INVOICE</Text>
+          <Pressable
+            style={styles.file}
+            onPress={async () => {
+              try {
+                const [pickResult] = await pick();
+                setInvoice(pickResult);
+              } catch (err) {
+                // see error handling
+              }
+            }}>
+            <Image
+              source={require('../../../assets/icons/plus-circle.png')}
+              width={24}
+              height={24}
+              maxWidth={24}
+              maxHeight={24}
+              style={{
+                marginRight: 5,
+              }}
+            />
+            <Text>Add Invoice</Text>
+          </Pressable>
+        </View> */}
+        <Pressable style={styles.addButton} onPress={addNewExpense}>
+          <Text style={styles.addButtonText}>Add Expense</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -62,43 +144,92 @@ export default function Card() {
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  card: {
+    padding: 30,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 24,
-  },
-  dropdownContainer: {
-    width: '100%',
+    width: '90%',
+    boxShadow: '0px 1px 25px rgba(42, 124, 118, 0.39)',
+    marginTop: 60,
   },
   dropdown: {
     height: 50,
     borderColor: 'gray',
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 8,
+    paddingLeft: 10,
+    marginTop: 5,
   },
-  placeholderStyle: {
-    fontSize: 16,
-    color: 'gray',
+  inputContainer: {
+    marginTop: 24,
   },
-  selectedTextStyle: {
+  input: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 10,
+    marginTop: 5,
+    height: 50,
+  },
+  file: {
+    flexDirection: 'row',
+    borderStyle: 'dotted',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 10,
+    marginTop: 5,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  datePressable: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 10,
+    marginTop: 5,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addButton: {
+    marginTop: 24,
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: '#2A7C76',
+  },
+  addButtonText: {
+    color: 'white',
     fontSize: 16,
   },
   item: {
     flexDirection: 'row',
+    padding: 20,
     alignItems: 'center',
-    padding: 10,
   },
   itemImage: {
-    width: 30,
-    height: 30,
-    marginRight: 10,
+    width: 32,
+    height: 32,
   },
   itemText: {
+    marginLeft: 16,
+  },
+  imageStyle: {
+    width: 24,
+    height: 24,
+  },
+  placeholderStyle: {
     fontSize: 16,
   },
-  icon: {
-    width: 30,
-    height: 30,
-    marginRight: 10,
+  selectedTextStyle: {
+    fontSize: 16,
+    marginLeft: 8,
   },
 });

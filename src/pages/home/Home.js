@@ -1,14 +1,29 @@
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Header from './components/header';
 import TransactionCard from './components/TransactionCard';
 import headerBg from '../../assets/images/header-bg.png';
 import BottomNavigation from '../../components/BottomNavigation';
 import DefaultLayout from '../../Layout/Default';
+import {useSelector} from 'react-redux';
 
 export default function Home() {
-  const styles = StyleSheet.create({});
+  const expenseList = Array.from(
+    useSelector(state => state.expense.expenseList),
+  );
   return (
     <>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="transparent"
+      />
       <ScrollView
         style={{
           backgroundColor: '#f5f5f5',
@@ -23,54 +38,22 @@ export default function Home() {
               <Text style={{fontSize: 20, fontWeight: 700}}>
                 Transactions History
               </Text>
-              <Text>See all</Text>
+              {/* <Text>See all</Text> */}
             </View>
             <View style={{marginTop: 20}}>
-              <TransactionCard
-                amount={'40,000'}
-                title={'Netflix'}
-                date={'Today'}
-                pic={headerBg}
-              />
-              <TransactionCard
-                amount={'40,000'}
-                title={'Netflix'}
-                date={'Today'}
-                pic={headerBg}
-              />
-              <TransactionCard
-                amount={'40,000'}
-                title={'Netflix'}
-                date={'Today'}
-                pic={headerBg}
-              />
-              <TransactionCard
-                amount={'40,000'}
-                title={'Netflix'}
-                date={'Today'}
-                pic={headerBg}
-              />
-              <TransactionCard
-                amount={'40,000'}
-                title={'Netflix'}
-                date={'Today'}
-                pic={headerBg}
-              />
-              <TransactionCard
-                amount={'40,000'}
-                title={'Netflix'}
-                date={'Today'}
-                pic={headerBg}
-              />
-              <TransactionCard
-                amount={'40,000'}
-                title={'Netflix'}
-                date={'Today'}
-                pic={headerBg}
-              />
+              {expenseList.reverse().map((value, index) => (
+                <View key={index}>
+                  <TransactionCard
+                    amount={value.amount}
+                    title={value.title}
+                    date={value.date}
+                    pic={headerBg}
+                  />
+                </View>
+              ))}
             </View>
           </View>
-          <View style={{marginVertical: 30}}>
+          {/* <View style={{marginVertical: 30}}>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={{fontSize: 20, fontWeight: 700}}>Send again</Text>
@@ -119,10 +102,10 @@ export default function Home() {
                 height={'100%'}
               />
             </View>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
-      <BottomNavigation />
+      <BottomNavigation isHome={true} />
     </>
   );
 }

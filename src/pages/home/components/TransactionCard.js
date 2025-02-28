@@ -1,8 +1,6 @@
 import {Image, Text, View} from 'react-native';
 
 export default function TransactionCard({pic, title, amount, date, type}) {
-  console.log(pic);
-
   return (
     <>
       <View
@@ -23,12 +21,12 @@ export default function TransactionCard({pic, title, amount, date, type}) {
             />
           </View>
           <View style={{marginLeft: 9}}>
-            <Text style={{fontSize: 15, }}>{title}</Text>
+            <Text style={{fontSize: 15, }}>{title === 0 ? 'Netflix' : 'Amazon Prime'}</Text>
             <Text style={{fontSize: 15, }}>{date}</Text>
           </View>
         </View>
         <View>
-          <Text style={{fontSize: 15, color: 'red'}}>- {amount}</Text>
+          <Text style={{fontSize: 15, color: 'red'}}>- Rs {amount}</Text>
         </View>
       </View>
     </>

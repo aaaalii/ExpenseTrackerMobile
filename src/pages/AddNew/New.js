@@ -1,13 +1,18 @@
 import {Text} from '@react-navigation/elements';
-import {Image, Pressable, StyleSheet, View} from 'react-native';
+import {Image, Pressable, StatusBar, StyleSheet, View} from 'react-native';
 import DefaultLayout from '../../Layout/Default';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Card from './components/addNewCard';
 
 export default function New() {
   const navigation = useNavigation();
   return (
     <>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="transparent"
+      />
       <DefaultLayout>
         <View
           style={{
@@ -16,9 +21,12 @@ export default function New() {
             padding: 24,
             marginTop: 40,
           }}>
-          <Pressable width={28} height={28} onPress={() => {
-            navigation.goBack();
-          }}>
+          <Pressable
+            width={28}
+            height={28}
+            onPress={() => {
+              navigation.goBack();
+            }}>
             <Image
               source={require('../../assets/icons/chevron-left.png')}
               maxWidth={28}
@@ -40,13 +48,14 @@ export default function New() {
               fontSize: 22,
               fontWeight: 900,
             }}>
-            ...
+            {/* ... */}
           </Text>
         </View>
-        <View style={{
-          alignItems: 'center',
-        }}>
-          <Card/>
+        <View
+          style={{
+            alignItems: 'center',
+          }}>
+          <Card />
         </View>
       </DefaultLayout>
     </>
