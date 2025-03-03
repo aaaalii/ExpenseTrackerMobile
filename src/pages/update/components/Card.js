@@ -9,16 +9,26 @@ import {
   Alert,
 } from 'react-native';
 import {SelectCountry} from 'react-native-element-dropdown';
+import {useDispatch, useSelector} from 'react-redux';
+import {addExpense, updateExpense} from '../../../store/expenseSlice';
 import CalendarModal from '../../../components/CalendarModal';
-import {useDispatch} from 'react-redux';
-import {addExpense} from '../../../store/expenseSlice';
 
-export default function Card() {
-  const [selectedTitle, setTitle] = useState(null);
-  const [amount, setAmount] = useState(null);
-  const [date, setDate] = useState('');
+export default function Card({id}) {
+  const expenseList = Array.from(
+    useSelector(state => state.expense.expenseList),
+  );
+  const expense = expenseList.find((value, index) => {
+    return value.id === id;
+  });
+
+  console.log(expense.amount);
+
+  const [selectedTitle, setTitle] = useState(expense.title);
+  const [amount, setAmount] = useState(parseFloat(expense.amount));
+  const [date, setDate] = useState(expense.date);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [invoice, setInvoice] = useState(null);
+
+  console.log(amount);
 
   const dispatch = useDispatch();
 
@@ -37,25 +47,20 @@ export default function Card() {
 
   useEffect(() => {}, [showCalendar]);
 
-  const addNewExpense = async () => {
-    if(selectedTitle === null || amount === null || date === ''){
+  const update = async () => {
+    if (selectedTitle === null || amount === null || date === '') {
       Alert.alert('All fields are required');
       return;
     }
-    const d = Date.now().toString();
-    console.log(d);
     dispatch(
-      addExpense({
-        id: d,
+      updateExpense({
+        id: expense.id,
         title: selectedTitle,
         amount: parseFloat(amount),
         date: date,
       }),
     );
-    setTitle(null);
-    setAmount(null);
-    setDate(null);
-    Alert.alert('Expense added!');
+    Alert.alert('Expense updated!');
     return;
   };
 
@@ -97,7 +102,7 @@ export default function Card() {
             style={styles.input}
             keyboardType="numeric"
             onChangeText={setAmount}
-            value={amount}
+            value={amount.toString()}
           />
         </View>
         <View style={styles.inputContainer}>
@@ -138,8 +143,8 @@ export default function Card() {
             <Text>Add Invoice</Text>
           </Pressable>
         </View> */}
-        <Pressable style={styles.addButton} onPress={addNewExpense}>
-          <Text style={styles.addButtonText}>Add Expense</Text>
+        <Pressable style={styles.addButton} onPress={update}>
+          <Text style={styles.addButtonText}>Update Expense</Text>
         </Pressable>
       </View>
     </View>

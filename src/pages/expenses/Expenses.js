@@ -34,7 +34,7 @@ export default function New() {
           text: 'Yes',
           onPress: () => {
             dispatch(removeExpense(obj));
-            console.log('Item deleted');
+            // console.log('Item deleted');
           },
         },
       ],
@@ -121,7 +121,14 @@ export default function New() {
                     </Text>
                   </View>
                   <Pressable
-                    style={styles.deleteButton}
+                    onPress={() => {
+                      navigation.navigate('Update', {
+                        id: value.id,
+                      });
+                    }}>
+                    <Text style={styles.updateButton}>Update</Text>
+                  </Pressable>
+                  <Pressable
                     onPress={() => {
                       deleteExpense(value);
                     }}>
@@ -132,10 +139,11 @@ export default function New() {
             ))}
           </ScrollView>
         ) : (
-          <View style={{
-            alignItems: 'center',
-            marginTop: 40,
-          }}>
+          <View
+            style={{
+              alignItems: 'center',
+              marginTop: 40,
+            }}>
             <Text
               style={{
                 color: 'white',
@@ -170,5 +178,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'red',
+  },
+  updateButton: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'rgb(42, 124, 118)',
   },
 });

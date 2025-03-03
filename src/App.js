@@ -8,6 +8,7 @@ import {persistor, store} from './store';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import Expenses from './pages/expenses/Expenses';
+import Update from './pages/update/Update';
 
 function App() {
   const Stack = createNativeStackNavigator();
@@ -53,6 +54,13 @@ function App() {
             <Stack.Screen
               name="List"
               component={Expenses}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Update"
+              component={Update}
               options={{
                 headerShown: false,
               }}
